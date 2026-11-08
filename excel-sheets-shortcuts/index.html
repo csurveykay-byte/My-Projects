@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Excel & Sheets Shortcuts</title>
+<style>
+/* Layout: a ruled grid like a worksheet. Sticky search toolbar, then one block per category,
+   each row = Action | Excel | Sheets, with keycaps. Windows keys only. */
+:root {
+  --bg: #f4f0fb;
+  --surface: #ffffff;
+  --fg: #1f1830;
+  --muted: #6a5f82;
+  --line: #dcd3ee;
+  --head: #ebe4f8;
+  --accent: #6d3fc7;
+  --accent-soft: #e8defa;
+  --on-accent: #ffffff;
+  --key-bg: #f8f5fd;
+  --key-line: #cbbfe3;
+  --key-edge: #b3a3d4;
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --font-key: "Cascadia Mono", ui-monospace, "SF Mono", Consolas, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15111f; --surface: #1c1729; --fg: #ece6f7; --muted: #a095bb; --line: #2f2745;
+    --head: #261f38; --accent: #b496f2; --accent-soft: #2c2244; --on-accent: #170e2b;
+    --key-bg: #261f38; --key-line: #3d3359; --key-edge: #4e4270; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15111f; --surface: #1c1729; --fg: #ece6f7; --muted: #a095bb; --line: #2f2745;
+  --head: #261f38; --accent: #b496f2; --accent-soft: #2c2244; --on-accent: #170e2b;
+  --key-bg: #261f38; --key-line: #3d3359; --key-edge: #4e4270; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 15px; line-height: 1.45;
+  padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 960px; margin: 0 auto; }
+header { display: grid; gap: 10px; margin-bottom: 20px; }
+h1 { margin: 0; font-size: clamp(1.7rem, 4.5vw, 2.5rem); line-height: 1.1; letter-spacing: -0.025em; font-weight: 750; text-wrap: balance; }
+.sub { margin: 0; color: var(--muted); max-width: 60ch; }
+
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  display: grid; gap: 10px; padding-block: 10px; margin-bottom: 8px; border-bottom: 1px solid var(--line);
+}
+.top { display: flex; flex-wrap: wrap; gap: 10px; }
+.search { flex: 1 1 240px; min-width: 0; position: relative; }
+.search input {
+  width: 100%; font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 40px 10px 12px;
+}
+.search input::placeholder { color: var(--muted); }
+.search kbd.slash { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.seg button { font: inherit; font-size: .9rem; color: var(--muted); background: transparent; border: 0; padding: 9px 14px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.chips button {
+  flex: none; font: inherit; font-size: .85rem; color: var(--fg); background: transparent; border: 1px solid var(--line);
+  border-radius: 999px; padding: 5px 12px; cursor: pointer;
+}
+.chips button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.count { color: var(--muted); font-size: .82rem; margin: 6px 0 0; }
+
+.grid { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 14px; }
+.row {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr); align-items: center;
+  border-top: 1px solid var(--line);
+}
+.row > * { padding: 9px 14px; min-width: 0; }
+.row > * + * { border-left: 1px solid var(--line); }
+.row:not(.head):hover { background: var(--accent-soft); }
+.head { background: var(--head); border-top: 0; font-size: .78rem; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.head i { font-style: normal; display: inline-block; min-width: 1.4em; margin-right: 6px; color: var(--accent); }
+.cat { margin: 0; padding: 14px 14px 8px; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; border-top: 1px solid var(--line); background: var(--surface); }
+.cat span { font-weight: 500; color: var(--muted); font-size: .8rem; margin-left: 8px; }
+.act { font-weight: 560; }
+.act small { display: block; color: var(--muted); font-weight: 400; font-size: .8rem; }
+.cell { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+.combo { display: inline-flex; align-items: center; gap: 3px; }
+.plus { font-style: normal; color: var(--muted); font-size: .75rem; }
+.then, .or { font-size: .72rem; color: var(--muted); text-transform: lowercase; padding-inline: 2px; }
+kbd {
+  font-family: var(--font-key); font-size: .78rem; line-height: 1; color: var(--fg); background: var(--key-bg);
+  border: 1px solid var(--key-line); border-bottom-width: 2px; border-bottom-color: var(--key-edge);
+  border-radius: 5px; padding: 4px 6px; white-space: nowrap;
+}
+.none { color: var(--muted); }
+.note { color: var(--muted); font-size: .85rem; }
+.empty { padding: 36px 16px; text-align: center; color: var(--muted); }
+[data-app="Excel"] .gs, [data-app="Sheets"] .xl { display: none; }
+[data-app="Excel"] .row, [data-app="Sheets"] .row { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+footer { margin-top: 18px; color: var(--muted); font-size: .82rem; }
+
+@media (max-width: 640px) {
+  body { padding-top: 18px; }
+  .head { display: none; }
+  .row, [data-app="Excel"] .row, [data-app="Sheets"] .row { grid-template-columns: 1fr; gap: 6px; padding: 10px 0; }
+  .row > * { padding: 0 14px; }
+  .row > * + * { border-left: 0; }
+  .cell::before {
+    content: attr(data-label); flex: none; width: 3.6rem; font-size: .7rem; font-weight: 650; letter-spacing: .05em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .seg { width: 100%; }
+  .seg button { flex: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .row, .chips button, .seg button { transition: background-color .12s; }
+}
+body { margin: 0; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app" data-app="Both">
+  <header>
+    <h1>Excel &amp; Sheets shortcuts</h1>
+    <p class="sub">Windows keys for Microsoft 365 Excel and Google Sheets, side by side. Press <kbd>/</kbd> to search.</p>
+  </header>
+
+  <div class="bar">
+    <div class="top">
+      <div class="search">
+        <input id="q" type="search" placeholder="Search: paste, row, filter, date…" autocomplete="off" aria-label="Search shortcuts">
+        <kbd class="slash" aria-hidden="true">/</kbd>
+      </div>
+      <div class="seg" role="group" aria-label="Show app">
+        <button type="button" data-app="Both" aria-pressed="true">Both</button>
+        <button type="button" data-app="Excel" aria-pressed="false">Excel</button>
+        <button type="button" data-app="Sheets" aria-pressed="false">Sheets</button>
+      </div>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Category"></div>
+  </div>
+  <p class="count" id="count" aria-live="polite"></p>
+  <div class="grid" id="grid"></div>
+  <footer>A dash means there is no standard shortcut. Excel steps joined by “then” are pressed one after another, not together.</footer>
+</div>
+
+<script>
+var DATA = [
+  { c: "Clipboard & fill", rows: [
+    ["Copy", "Ctrl+C", "Ctrl+C", ""],
+    ["Cut", "Ctrl+X", "Ctrl+X", ""],
+    ["Paste", "Ctrl+V", "Ctrl+V", ""],
+    ["Paste values only", "Ctrl+Alt+V then V then Enter", "Ctrl+Shift+V", "paste without formatting plain text no format"],
+    ["Paste formatting only", "Ctrl+Alt+V then T then Enter", "Ctrl+Alt+V", "paste format style"],
+    ["Paste Special menu", "Ctrl+Alt+V", null, "transpose formulas"],
+    ["Fill down", "Ctrl+D", "Ctrl+D", "copy cell above"],
+    ["Fill right", "Ctrl+R", "Ctrl+R", "copy cell left"]
+  ]},
+  { c: "Undo & redo", rows: [
+    ["Undo", "Ctrl+Z", "Ctrl+Z", ""],
+    ["Redo", "Ctrl+Y", "Ctrl+Y or Ctrl+Shift+Z", "ctrl shift z"],
+    ["Repeat last action", "F4", null, "again"]
+  ]},
+  { c: "Select & move", rows: [
+    ["Select all", "Ctrl+A", "Ctrl+A", ""],
+    ["Select column", "Ctrl+Space", "Ctrl+Space", ""],
+    ["Select row", "Shift+Space", "Shift+Space", ""],
+    ["Jump to edge of data", "Ctrl+Arrow", "Ctrl+Arrow", "navigate"],
+    ["Select to edge of data", "Ctrl+Shift+Arrow", "Ctrl+Shift+Arrow", "extend selection"],
+    ["Go to A1", "Ctrl+Home", "Ctrl+Home", "top left"],
+    ["Go to last used cell", "Ctrl+End", "Ctrl+End", "bottom right"],
+    ["Go to a cell or range", "Ctrl+G or F5", "~Use the Name box", "jump"],
+    ["Next sheet tab", "Ctrl+PgDn", "Alt+Down", "worksheet"],
+    ["Previous sheet tab", "Ctrl+PgUp", "Alt+Up", "worksheet"]
+  ]},
+  { c: "Edit & insert", rows: [
+    ["Edit the active cell", "F2", "F2", ""],
+    ["New line inside a cell", "Alt+Enter", "Alt+Enter", "line break"],
+    ["Insert today's date", "Ctrl+;", "Ctrl+;", ""],
+    ["Insert current time", "Ctrl+Shift+;", "Ctrl+Shift+;", ""],
+    ["Flash Fill", "Ctrl+E", null, "autofill pattern"],
+    ["Insert link", "Ctrl+K", "Ctrl+K", "hyperlink"],
+    ["Find", "Ctrl+F", "Ctrl+F", "search"],
+    ["Find and replace", "Ctrl+H", "Ctrl+H", ""],
+    ["Add a note", "Shift+F2", "Shift+F2", ""],
+    ["Add a comment", "Ctrl+Alt+M", "Ctrl+Alt+M", ""]
+  ]},
+  { c: "Formulas", rows: [
+    ["Cycle absolute and relative refs", "F4", "F4", "dollar sign lock $A$1"],
+    ["Show all formulas", "Ctrl+`", "Ctrl+`", "toggle formula view"],
+    ["AutoSum", "Alt+=", null, "sum"],
+    ["Array formula", "Ctrl+Shift+Enter", "Ctrl+Shift+Enter", "arrayformula"],
+    ["Evaluate selected part of a formula", "F9", null, "debug"],
+    ["Expand or collapse formula bar", "Ctrl+Shift+U", null, ""]
+  ]},
+  { c: "Formatting", rows: [
+    ["Bold", "Ctrl+B", "Ctrl+B", ""],
+    ["Italic", "Ctrl+I", "Ctrl+I", ""],
+    ["Underline", "Ctrl+U", "Ctrl+U", ""],
+    ["Strikethrough", "Ctrl+5", "Alt+Shift+5", ""],
+    ["Format cells dialog", "Ctrl+1", null, ""],
+    ["Clear formatting", "Alt then H then E then F", "Ctrl+\\", "remove format"],
+    ["Currency format", "Ctrl+Shift+4", "Ctrl+Shift+4", "money dollar"],
+    ["Percent format", "Ctrl+Shift+5", "Ctrl+Shift+5", ""],
+    ["Number format", "Ctrl+Shift+1", "Ctrl+Shift+1", "decimals"],
+    ["Date format", "Ctrl+Shift+3", "Ctrl+Shift+3", ""],
+    ["Add outer border", "Ctrl+Shift+7", "Alt+Shift+7", "outline"],
+    ["Remove borders", "Ctrl+Shift+-", "Alt+Shift+6", ""]
+  ]},
+  { c: "Rows, columns & sheets", rows: [
+    ["Insert rows or columns", "Ctrl+Shift+=", "Ctrl+Alt+=", "add"],
+    ["Delete rows or columns", "Ctrl+-", "Ctrl+Alt+-", "remove"],
+    ["Hide row", "Ctrl+9", "Ctrl+Alt+9", ""],
+    ["Hide column", "Ctrl+0", "Ctrl+Alt+0", ""],
+    ["Unhide row", "Ctrl+Shift+9", "Ctrl+Shift+9", ""],
+    ["Unhide column", "Ctrl+Shift+0", "Ctrl+Shift+0", ""],
+    ["Group rows or columns", "Alt+Shift+Right", "Alt+Shift+Right", "outline"],
+    ["Ungroup rows or columns", "Alt+Shift+Left", "Alt+Shift+Left", ""],
+    ["Autofit column width", "Alt then H then O then I", "~Double-click the column edge", "resize"],
+    ["New sheet", "Shift+F11", "Shift+F11", "tab worksheet"]
+  ]},
+  { c: "Data & help", rows: [
+    ["Turn filter on or off", "Ctrl+Shift+L", "Ctrl+Shift+L", "autofilter"],
+    ["Create a table", "Ctrl+T", null, ""],
+    ["Open the shortcut list", null, "Ctrl+/", "help"]
+  ]}
+];
+
+var LBL = { Up: "↑", Down: "↓", Left: "←", Right: "→", Arrow: "←↑↓→" };
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+function keys(s) {
+  if (s == null) return '<span class="none" aria-label="No standard shortcut">—</span>';
+  if (s.charAt(0) === "~") return '<span class="note">' + esc(s.slice(1)) + "</span>";
+  return s.split(" or ").map(function (alt) {
+    return alt.split(" then ").map(function (step) {
+      return '<span class="combo">' + step.split("+").map(function (k) { return "<kbd>" + esc(LBL[k] || k) + "</kbd>"; }).join('<i class="plus">+</i>') + "</span>";
+    }).join('<span class="then">then</span>');
+  }).join('<span class="or">or</span>');
+}
+
+var state = { q: "", cat: "All", app: "Both" };
+try { var saved = localStorage.getItem("shortcuts-app"); if (saved === "Excel" || saved === "Sheets" || saved === "Both") state.app = saved; } catch (e) {}
+
+var root = document.getElementById("app");
+var grid = document.getElementById("grid");
+var chips = document.getElementById("chips");
+var count = document.getElementById("count");
+var qEl = document.getElementById("q");
+
+function renderChips() {
+  var names = ["All"].concat(DATA.map(function (d) { return d.c; }));
+  chips.innerHTML = names.map(function (n) {
+    return '<button type="button" data-cat="' + esc(n) + '" aria-pressed="' + (state.cat === n) + '">' + esc(n) + "</button>";
+  }).join("");
+}
+
+function render() {
+  root.setAttribute("data-app", state.app);
+  var q = state.q.trim().toLowerCase();
+  var total = 0;
+  var out = '<div class="row head"><div><i>A</i>Action</div><div class="xl"><i>B</i>Excel</div><div class="gs"><i>C</i>Sheets</div></div>';
+  DATA.forEach(function (d) {
+    if (state.cat !== "All" && state.cat !== d.c) return;
+    var rows = d.rows.filter(function (r) {
+      if (!q) return true;
+      var hay = (r[0] + " " + (r[1] || "") + " " + (r[2] || "") + " " + r[3]).toLowerCase();
+      return q.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
+    });
+    if (!rows.length) return;
+    total += rows.length;
+    out += '<h2 class="cat">' + esc(d.c) + "<span>" + rows.length + "</span></h2>";
+    rows.forEach(function (r) {
+      out += '<div class="row"><div class="act">' + esc(r[0]) + '</div><div class="cell xl" data-label="Excel">' + keys(r[1]) +
+        '</div><div class="cell gs" data-label="Sheets">' + keys(r[2]) + "</div></div>";
+    });
+  });
+  if (!total) out = '<div class="empty">No shortcuts match “' + esc(state.q) + '”. Try “paste”, “row” or “format”.</div>';
+  grid.innerHTML = out;
+  count.textContent = total + (total === 1 ? " shortcut" : " shortcuts");
+  Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function (b) {
+    b.setAttribute("aria-pressed", String(b.getAttribute("data-app") === state.app));
+  });
+  Array.prototype.forEach.call(chips.children, function (b) {
+    b.setAttribute("aria-pressed", String(b.getAttribute("data-cat") === state.cat));
+  });
+}
+
+qEl.addEventListener("input", function () { state.q = qEl.value; render(); });
+document.querySelector(".seg").addEventListener("click", function (e) {
+  var b = e.target.closest("button"); if (!b) return;
+  state.app = b.getAttribute("data-app");
+  try { localStorage.setItem("shortcuts-app", state.app); } catch (err) {}
+  render();
+});
+chips.addEventListener("click", function (e) {
+  var b = e.target.closest("button"); if (!b) return;
+  state.cat = b.getAttribute("data-cat"); render();
+});
+document.addEventListener("keydown", function (e) {
+  if (e.key === "/" && document.activeElement !== qEl && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); qEl.focus(); }
+  if (e.key === "Escape" && document.activeElement === qEl) { qEl.value = ""; state.q = ""; render(); qEl.blur(); }
+});
+
+renderChips();
+render();
+</script>
+
+</body>
+</html>
